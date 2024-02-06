@@ -8,9 +8,7 @@
     "manifest_version": 3,
     "default_locale": "en",
     "minimum_chrome_version": "88",
-    
+
     "permissions": ["scripting"],
     "host_permissions": ["<all_urls>"],
-    
-    
-} 
+}

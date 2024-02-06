@@ -6,5 +6,5 @@
  */
 
 export const env_var = {
-    "GEMINI_API_KEY" : "YOUR API KEY"
+    "GEMINI_API_KEY": "YOUR API KEY"
 };
