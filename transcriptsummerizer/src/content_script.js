@@ -3,68 +3,119 @@ import {env_var} from "./env"
 
 const genAI = new GoogleGenerativeAI(env_var.GEMINI_API_KEY);
 
-//-------------------ACTIVITY 2 -----------------
-async function clickAttachementsButton() {
-    // Get the html button of the Attachements tab using document.querySelector()
-    // const attachmentsButton = TODO
-    
-    if (attachmentsButton) {
-        // TODO Click on the button using .click()
-        
-    
-        // Give a little bit of time to process
+async function clickSubmitButton() {
+    const submitButton = document.querySelector("#tab-attachments-tab > span");
+    if (submitButton) {
+        submitButton.click();
         await new Promise(resolve => setTimeout(resolve, 1000));
     } else {
-        alert('Attachments button not found.');
+        alert('Submit button not found.');
     }
-
 }
 
 async function fetchTranscriptData() {
-    // Get the html of the download transcript button
-    // const downloadLinkButton = TODO
-    
-    if (!downloadLinkButton) {
+    const downloadLink = document.querySelector('a.js-download-attachment-link');
+    if (!downloadLink) {
         throw new Error('Download link not found.');
     }
-
-    // Extract the url from the element using .getAttribute
-    // const url = TODO
-    
-    // Fetch the url
-    const response = await fetch(url);
+    const link = downloadLink.getAttribute('href');
+    const response = await fetch(link);
     if (!response.ok) {
         throw new Error('Network response was not ok');
     }
-
     return response.text();
 }
 
-
-//-------------------ACTIVITY 3 -----------------
 async function paraphraseTranscript(data) {
     const model = genAI.getGenerativeModel({ model: "gemini-pro"});
-    const prompt = "YOUR TURN TO PROMT ENGINEER THIS";
-    // TOD Use generateContent() with your promt and store in result
-
+    const prompt = "Give me a summary of this lecture: " + data;
+    const result = await model.generateContent(prompt);
     const response = await result.response;
     const text = await response.text();
     chrome.runtime.sendMessage({ data: text });
+    return text
 }
 
-async function downloadAndParaphraseTranscript() {
+async function sendNotesToNotion(data) {
+    const apiKey = env_var.NOTION_API_KEY
+
+    const databaseId = "42e9fd91a414420ea4c2c591282f2efa";
+    const url = 'https://api.notion.com/v1/pages';
+
     try {
-        const data = await fetchTranscriptData();
-        await paraphraseTranscript(data);
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Authorization': apiKey,
+                'Content-Type': 'application/json',
+                'Notion-Version': '2022-06-28',
+            },
+            body: JSON.stringify({
+                parent: {
+                    database_id: databaseId
+                },
+                properties: {
+                    Name: {
+                        title: [
+                            {
+                                text: {
+                                    content: "LECTURE NOTES"
+                                }
+                            }
+                        ]
+                    }
+                },
+                children: [
+                    {
+                        type: 'paragraph',
+                        paragraph: {
+                            color: 'default',
+                            rich_text: [
+                                {
+                                    type: 'text',
+                                    text: { content: data, link: null },
+                                    annotations: {
+                                        bold: false,
+                                        italic: false,
+                                        strikethrough: false,
+                                        underline: false,
+                                        code: false,
+                                        color: 'default',
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ]
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error(`Failed to create Notion entry: ${response.status} - ${response.statusText}`);
+        }
+
+        const responseData = await response.json();
+        console.log("Notion entry created:", responseData);
+        return responseData
     } catch (error) {
-        console.error('Error in processing transcript:', error);
+        console.error('Error:', error);
         chrome.runtime.sendMessage({ error: error.message });
     }
 }
 
+
+
 async function executeTasks() {
-    await clickSubmitButton();
-    await downloadAndParaphraseTranscript(); 
+    await clickSubmitButton()
+        .then(fetchTranscriptData)
+        .then(paraphraseTranscript)
+        .then(paraphrasedTranscript => sendNotesToNotion(paraphrasedTranscript))
+        .then(response => {
+            console.log("Notes sent to Notion: ", response);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
 }
 
 executeTasks();

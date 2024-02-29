@@ -3,23 +3,56 @@
 <head>
     <title>activity</title>
     <style>
-        /* You can modify this based on your liking */
-        body {
-            width: 800px; 
-        }
+        /* Styles for the popup container */
         .popup-container {
-            width: 800px;
-            margin: 0 auto;
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: "Background color of your chrome extension";
+            border: 1px solid "border background color of your choice";
+            border-radius: 5px;
+            width: "#SET SIZE OF THE DIV";
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /*feel free to change thhis*/
         }
+
+        body {
+            width: "# set width of your container"
+            
+        }
+
+        #clickactivity {
+            background-color: "Hex of your favorite color";
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        /* We want to change the color of the button when it is hovered */
+        #clickactivity:hover {
+            
+        }
+
+        
+        #dataDisplay {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            height: 100px;
+            overflow-y: auto;
+        }
+    </style>
     </style>
 </head>
 <body>
-    <!--ACTIVITY #1-->
+    <!-- Use a container element to control the popup's width -->
     <div class="popup-container">
-         <!-- Create a HTML button with id="clickactivity" -->
-         <!-- Create a div  with id="dataDisplay". We will use this to display our 
-                output -->
+        <button id="clickactivity">Get Transcript</button>
+        <div id="dataDisplay"></div>
     </div>
-        <!-- Create a script tag with "src="popup.js" -->
+    <script src="popup.js"></script>
 </body>
 </html>

@@ -40,7 +40,18 @@
     },
     "xtbuild": {
         "js_bundles": [
-            
+            {
+                "name": "popup",
+                "src": "./src/popup.js"
+            },
+            {
+                "name": "content_script",
+                "src": "./src/content_script.js"
+            },
+            {
+                "name": "env",
+                "src": "./src/env.js"
+            }
         ]
     },
     "dependencies": {
