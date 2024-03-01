@@ -3,10 +3,10 @@
     "description": "canvas transcript summarizer",
     "version": "0.0.1",
     "homepage": "http://chrome.google.com/webstore",
-    "author": "ENTER YOUR NAME HERE",
+    "author": "Scott",
     "repository": {
         "type": "git",
-        "url": "ENTER GIT REPO URL"
+        "url": "github.com/ssemtner/chrome-extension-workshop"
     },
     "scripts": {
         "start": "xt-build -e dev -w",
@@ -40,7 +40,18 @@
     },
     "xtbuild": {
         "js_bundles": [
-            
+            {
+                "name": "popup",
+                "src": "src/popup.js"
+            },
+            {
+                "name": "content_script",
+                "src": "src/content_script.js"
+            },
+            {
+                "name": "env",
+                "src": "src/env.js"
+            }
         ]
     },
     "dependencies": {

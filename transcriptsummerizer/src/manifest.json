@@ -11,4 +11,9 @@
 
     "permissions": ["scripting"],
     "host_permissions": ["<all_urls>"],
+
+    "action": {
+        "default_title": "Click me",
+        "default_popup": "hello.html"
+    }
 }
